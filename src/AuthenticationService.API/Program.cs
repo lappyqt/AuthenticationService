@@ -1,8 +1,12 @@
+using AuthenticationService.DAL;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDALLayer(builder.Configuration);
 
 var app = builder.Build();
 
