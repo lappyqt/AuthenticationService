@@ -16,6 +16,5 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AuthenticationService.BL\AuthenticationService.BL.csproj" />
-    <ProjectReference Include="..\AuthenticationService.DAL\AuthenticationService.DAL.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" SetTargetFramework="TargetFramework=net6.0" />
   </ItemGroup>
 </Project>
