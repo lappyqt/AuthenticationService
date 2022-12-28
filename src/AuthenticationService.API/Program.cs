@@ -1,3 +1,4 @@
+using AuthenticationService.API;
 using AuthenticationService.BL;
 using AuthenticationService.DAL;
 
@@ -8,7 +9,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDALLayer(builder.Configuration);
-builder.Services.AddBLLayer(builder.Configuration);
+builder.Services.AddBLLayer(builder.Environment);
+builder.Services.AddJWT(builder.Configuration);
 
 var app = builder.Build();
 
