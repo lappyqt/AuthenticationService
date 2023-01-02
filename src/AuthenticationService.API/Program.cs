@@ -8,6 +8,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+DotNetEnv.Env.Load("../");
+
 builder.Services.AddDALLayer(builder.Configuration);
 builder.Services.AddBLLayer(builder.Environment);
 builder.Services.AddJWT(builder.Configuration);

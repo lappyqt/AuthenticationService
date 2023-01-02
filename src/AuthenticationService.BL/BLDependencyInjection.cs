@@ -15,6 +15,14 @@ public static class BLDependencyInjection
 
 	public static void AddServices(this IServiceCollection services, IWebHostEnvironment environment)
 	{
+		var smtpHost = Environment.GetEnvironmentVariable("SMTP_HOST");
+		var smtpUser = Environment.GetEnvironmentVariable("SMTP_USER");
+		var smtpPassword = Environment.GetEnvironmentVariable("SMTP_PASSWORD");
+
+		services
+			.AddFluentEmail(smtpUser)
+			.AddSmtpSender(smtpHost, 587, smtpUser, smtpPassword);
+			
 		services.AddScoped<IAccountService, AccountService>();
 	}
 }

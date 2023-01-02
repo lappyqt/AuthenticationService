@@ -4,6 +4,7 @@ using AuthenticationService.DAL.Data;
 using AuthenticationService.BL.Helpers;
 using AuthenticationService.Core.Entities;
 using Microsoft.Extensions.Configuration;
+using FluentEmail.Core;
 
 namespace AuthenticationService.BL.Services.Impl;
 
@@ -11,11 +12,13 @@ public class AccountService : IAccountService
 {
 	private readonly AccountRepository _repository;
 	private readonly IConfiguration _configuration;
+	private readonly IFluentEmail _emailService;
 
-	public AccountService(DatabaseContext context, IConfiguration configuration)
+	public AccountService(DatabaseContext context, IConfiguration configuration, IFluentEmail emailService)
 	{
 		_repository = new AccountRepository(context);
 		_configuration = configuration;
+		_emailService = emailService;
 	}
 
 	public async Task<CreateAccountResponseModel> CreateAccountAsync(CreateAccountModel createAccountModel)
@@ -31,6 +34,12 @@ public class AccountService : IAccountService
 			PasswordSalt = passwordSalt,
 			VerificationToken = TokenGeneration.GenerateRandomToken()
 		};
+
+		var email = await _emailService
+			.To(account.Email)
+			.Subject("Verification token")
+			.Body($"Your token: <b>{account.VerificationToken}</b>", true)
+			.SendAsync();
 
 		await _repository.AddAsync(account);
 		return new CreateAccountResponseModel { Id = account.Id };
@@ -74,6 +83,13 @@ public class AccountService : IAccountService
 
 		account.ResetTokenExpires = DateTime.UtcNow.AddDays(3);
 		account.PasswordResetToken = TokenGeneration.GenerateRandomToken();
+
+		var email = await _emailService
+			.To(account.Email)
+			.Subject("Password Reset Token")
+			.Body($"Your token: <b>{account.PasswordResetToken}</b> <br>Expires: <b>{account.ResetTokenExpires}</b>", true)
+			.SendAsync();
+
 		await _repository.UpdateAsync(account);
 		return new ForgotPasswordResponseModel { Id = account.Id};
 	}
